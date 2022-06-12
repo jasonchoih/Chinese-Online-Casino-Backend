@@ -20,25 +20,47 @@ const index = async(d) =>
     }
 };
 // 
-const news = async(d) => 
+const newshome = async(d) => 
 {
     const rows = await TITLE.findAll({
         attributes: ['title'],
         order: [['id','DESC']],
         limit: 3
     });
-    let NewList = [];
+    let NewListHome = [];
     rows.map((v,k)=>{
-        NewList.push(
+        NewListHome.push(
             v.title
         )
     });
     return {
-        NewList
+        NewListHome
+    };
+}
+// 
+const news = async(d) => 
+{
+    const rows = await TITLE.findAll({
+        attributes: ['id','title','time'],
+        order: [['id','DESC']]
+    });
+    let NewList = [];
+    const rowslen = rows.length;
+    rows.map((v,k)=>{
+        NewList.push([
+            rowslen-k,
+            v.title,
+            dayjs(v.time).format('YYYY-MM-DD HH:mm:ss'),
+            v.id
+        ])
+    });
+    return {
+        NewList,
     };
 }
 // 
 module.exports = {
     index,
-    news
+    news,
+    newshome
 };

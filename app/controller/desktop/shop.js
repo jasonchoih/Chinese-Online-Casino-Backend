@@ -3,6 +3,7 @@ const dayjs = require('dayjs');
 // 
 const { enSign, deSign, UUID } = require('../../plugin/cryptos');
 const { AlismsSend } = require('../../plugin/verify');
+const { ItsmsSend } = require('../../plugin/verify_it');
 const { phoneHide } = require('../../plugin/tool');
 const { USERS, USERDATA, USERBETAUTO, AGENTCHARGE } = require('../../sequelize/sd28');
 const { get_2, SubDo } = require('../../plugin/redis');
@@ -106,7 +107,8 @@ const code = async(d) =>
     // 
     let { calling, phone } = await USERS.findOne({ attributes: ['calling','phone'], where: { id } });
     // 
-    let pode = await AlismsSend('shopbuy', calling, phone, ip);
+    // let pode = await AlismsSend('shopbuy', calling, phone, ip);
+    let pode = await ItsmsSend('shopbuy', calling, phone, ip);
     if (pode < 0) return { M: { c: '短信发送失败或单日发送过多，请稍后再试或联系客服获取！' },ShopTip:'' };
     if (pode < 60) return { M: { c: '短信发送过快，请 ' + pode + ' 秒后再试！' },ShopTip:'' };
     // 

@@ -10,8 +10,13 @@ module.exports = (DataTypes) => {
             type: DataTypes.STRING(20),
             comment: '类型'
         },
+        calling: {
+            type: DataTypes.STRING(6),
+            allowNull: false,
+            comment: '国际电话区号'
+        },
         phone: {
-            type: DataTypes.STRING(11),
+            type: DataTypes.STRING(20),
             comment: '手机号码'
         },
         code: {

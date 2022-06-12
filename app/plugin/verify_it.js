@@ -7,6 +7,7 @@ const { getRandom } = require('./tool');
 // 
 const {
     USERPHONESMS,
+    USERS
 } = require('../sequelize/sd28');
 
 // 手机号码检测
@@ -21,27 +22,16 @@ const CallingCheck = async(calling) => {
     if (!calls.find(v => v == calling)) return false;
     return true;
 };
-// 腾讯验证
-const TxcaptchaCheck = async(randstr, ticket, ip) => {
-    if (!randstr || !ticket || !ip) return false;
-    const _txurl = 'https://ssl.captcha.qq.com/ticket/verify?aid=2038774995&AppSecretKey=0lDvje31FVDzL-nJ_b8I3Uw**&Ticket=';
-    try {
-        const texxunVerify = await request({
-            method: 'get',
-            json: true,
-            uri: _txurl + ticket + '&Randstr=' + randstr + '&UserIP=' + ip,
-            timeout: 5000
-        });
-        if (texxunVerify && texxunVerify.response == '1') return true;
-    } catch (error) {
-
-    }
-    return false
-};
-// 发送验证码 - 阿里云
-const AlismsSend = async(type, calling, phone, ip) => {
-    const accessKeyId = 'LTAIapdqTusUGH3z';
-    const secretAccessKey = 'AxtxKbUjTDsUZOnGGxE0blFAlpxgjB';
+// 发送验证码 - 国际
+// type -- register / login / shopbuy / wjmm
+// calling +86
+// phone 1390000000
+// ip -
+//
+const ItsmsSend = async(type, calling, phone, ip) => 
+{
+    // if(!await CallingCheck(calling)) return -11;
+    //
     const _out_time = 60;
     let model = {
         register: 'SMS_179220774',
@@ -49,11 +39,14 @@ const AlismsSend = async(type, calling, phone, ip) => {
         shopbuy: 'SMS_181506055',
         wjmm: 'SMS_181506055',
     }
-    if (!model[type]) return -1;
+    if(!model[type]) return -1;
+    // 
+    const number = calling+''+phone;
+    // 
     const _sms = await USERPHONESMS.findOne({
         where: {
             type,
-            phone,
+            phone: number,
         },
         order: [
             ['id', 'DESC']
@@ -66,25 +59,40 @@ const AlismsSend = async(type, calling, phone, ip) => {
     const code = await getRandom(111111, 999999);
     let _send;
     try {
-        let smsClient = new SMSClient({ accessKeyId, secretAccessKey })
-        _send = await smsClient.sendSMS({
-            PhoneNumbers: phone,
-            SignName: '盛大28',
-            TemplateCode: model[type],
-            TemplateParam: '{"code":' + code + '}'
-        })
+        await request({
+            'method': 'POST',
+            'url': 'https://api.sms.to/sms/send',
+            'headers': {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2F1dGg6ODA4MC9hcGkvdjEvdXNlcnMvYXBpL2tleS9nZW5lcmF0ZSIsImlhdCI6MTY0NDkzMTExNywibmJmIjoxNjQ0OTMxMTE3LCJqdGkiOiJROVJ5VDc0aGVWM0RramRMIiwic3ViIjozNDUzNzYsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.k9MpS649GF3zxq2hv5KvreTWu8bwHeZ_0aaOIskNAug'
+            },
+            body: `{ 
+                "message": "您的验证码为：`+code+`，该验证码 60 分钟内有效，请勿泄漏于他人。",
+                "to": "+`+number+`",
+                "bypass_optout": true,    
+                "sender_id": "sd28",    
+                "callback_url": "https://example.com/callback/handler"
+            }`}, function (error, response) {
+            // if (error) throw new Error(error);
+            // console.log(response.body);
+            _send = JSON.parse(response.body);
+        });
     } catch (error) {
-
+        
     }
-    if (!_send || _send.Code !== 'OK') return -2;
+    if (!_send || _send['success'] !== true) return -2;
+    // 
+    // const _users = await USERS.findOne({attributes:['id','nick'],where:{phone}});
     //
     await USERPHONESMS.create({
+        calling,
         phone,
         type,
-        calling,
         code,
         ip,
         time: dayjs().format('YYYY-MM-DD HH:mm:ss')
+        // user_id : _users&&_users.id||0,
+        // user_nick : _users&&_users.nick||''
     });
     return code;
 };
@@ -92,6 +100,6 @@ const AlismsSend = async(type, calling, phone, ip) => {
 module.exports = {
     PhoneCheck,
     CallingCheck,
-    TxcaptchaCheck,
-    AlismsSend,
+    // TxcaptchaCheck,
+    ItsmsSend,
 };

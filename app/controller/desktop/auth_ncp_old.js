@@ -19,7 +19,6 @@ const registercode = async(d) =>
     // 
     if (await USERS.findOne({ attributes: ['id'], where: { calling, phone } })) return { RegisterStatus: { phone: { s: 'error', h: '手机号码已存在，请更换' } }, RegisterLoading: '' };
     // 
-    // let code = await AlismsSend('register', calling, phone, ip);
     let code = await ItsmsSend('register', calling, phone, ip);
     if (code < 0) return { M: { c: '发送失败，请稍后再试！' }, RegisterLoading: '' };
     if (code < 60) return { M: { c: '短信发送过快，请 ' + code + ' 秒后再试！' }, Register: { SendTime: code }, RegisterLoading: '' };
@@ -164,7 +163,6 @@ const forgotcode = async(d) =>
     // 
     if(!await USERS.findOne({ attributes: ['id'], where: { calling, phone } })) return { ForgotStatus: { phone: { s: 'error', h: '手机号码不存在，请更换' } }, ForgotLoading: '' };
     // 
-    // let code = await AlismsSend('wjmm', calling, phone, ip);
     let code = await ItsmsSend('wjmm', calling, phone, ip);
     if (code < 0) return { M: { c: '发送失败，请稍后再试！' }, ForgotLoading: '' };
     if (code < 60) return { M: { c: '短信发送过快，请 ' + code + ' 秒后再试！' }, Forgot: { SendTime: code }, ForgotLoading: '' };
@@ -253,7 +251,6 @@ const logincode = async(d) =>
         await USERLOGINNUM.update({status:1},{where:{user_id:_user.id,status:2}});
     }
     // 
-    // let code = await AlismsSend('login', _user.calling, _user.phone, ip);
     let code = await ItsmsSend('login', _user.calling, _user.phone, ip);
     if (code < 0) return { M: { c: '登录验证码发送失败，请稍后再试！' }, LoginLoading: '' };
     if (code < 60) return { M: { c: '登录验证码发送过快，请 ' + code + ' 秒后再试！' }, LoginLoading: '' };

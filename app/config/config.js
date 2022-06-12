@@ -33,28 +33,28 @@ module.exports = {
     bkey: 'F3JL7ED6jqWjcrY9',
     // 允许访问的域名
     origins: [
-        'https://www.sd28.com',
-        'https://www.sd28.vip',
-        'https://www.rn28.com',
-        'https://www.shengda28.com',
-        'https://www.littlelittle7.com',
-        'https://www.zhongxue18.com',
-        'https://www.gedeng.top',
-        'https://www.jctwj.top',
-        // 
-        'https://m.sd28.com',
-        'https://m.sd28.vip',
-        'https://m.rn28.com',
-        'https://m.shengda28.com',
-        'https://m.littlelittle7.com',
-        'https://m.zhongxue18.com',
-        // 
         'http://localhost:6724',
         'http://localhost:6725',
         // 
-        'https://ncp.sd28.com',
         'https://sdwsocket.ncshouda.com',
-        'https://hk.sd28.com'
+        'https://mgsock.qiuwenbo.top',
+        'mgw.izcy.top',
+        'https://w.yanyh.top',
+        'https://w.chenhouzhang.top',
+        'https://w.edusky.top',
+        // 
+        'https://www.shubaokt.com',
+        'https://www.chatterfu.com',
+        'https://www.tcphb.com',
+        // 
+        'https://hk.couponze.com',
+        // 
+        'https://www.couponze.com',
+        'https://www.bribruce.com',
+        'https://www.saimx.com',
+        'https://www.mycprpro.com',
+        'https://www.shdihua.com',
+        'https://www.saikmusic.com'
     ],
     // 路径白名单
     pathWhite:{
@@ -67,7 +67,8 @@ module.exports = {
             'home/rank',
             'home/agents',
             'eniu_home/index',
-            'eniu_activy/activy',
+            'eniu_home/newshome',
+            'eniu_activy/activym',
             //
             'auth/registercode',
             'auth/register',
